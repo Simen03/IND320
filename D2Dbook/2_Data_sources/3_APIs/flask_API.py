@@ -24,7 +24,10 @@ def create_entry(id):
 # GET endpoint
 @app.get('/api/get/<id>')
 def get_record(id):
-    return LocalData.records[id]
+    try:
+        return LocalData.records[id]
+    except KeyError:
+        return {}
 
 # UPDATE endpoint
 @app.post('/api/update/<id>')
@@ -36,9 +39,12 @@ def update_entry(id):
 # DELETE endpoint
 @app.delete('/api/delete/<id>')
 def delete_entry(id):
-    d = LocalData.records[id]
-    LocalData.records.pop(id)
-    return d
+    try:
+        d = LocalData.records[id]
+        LocalData.records.pop(id)
+        return d
+    except KeyError:
+        return {'error': f'No record found for id {id}'}
 
 if __name__ == '__main__':
     app.run(port=8000)
